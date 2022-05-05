@@ -493,7 +493,7 @@ class MyDecisionTreeClassifier:
                     idk'''
         pass
 
-    def predict(self, X_test):
+    def predict(self, X_test1):
         """Makes predictions for test instances in X_test.
 
         Args:
@@ -504,16 +504,22 @@ class MyDecisionTreeClassifier:
             y_predicted(list of obj): The predicted target y values (parallel to X_test)
         """
         x_guesses = []
-        for x_inst in X_test:
+        for x_inst in X_test1:
+
             guess = 'idk'
             spot = self.tree
             #print()
             #print('start')
+            #print('x_inst')
+            #print(len(X_test1))
             while guess == 'idk':
+                #print()
+                #print('guess:', guess)
+                #print('spot:',spot)
                 values = []
 
                 if spot[0] == "Leaf":
-                    #print(spot)
+                    #print('leaf found:', spot)
                     guess = spot[1]
 
                 elif spot[0] == "Attribute":
@@ -528,7 +534,7 @@ class MyDecisionTreeClassifier:
 
                     new_spot = 'notfoundyet'
                     #for value in values:
-                    #    print(value)
+                        #print(value)
 
                     for value_check in values:
                         #print(new_spot, value_inst, value_check[1])
@@ -536,11 +542,65 @@ class MyDecisionTreeClassifier:
                             new_spot = value_check
                             #print('FOUND',new_spot, value_inst, value_check[1])
 
-                    spot = new_spot[2]
+                    spot = copy.deepcopy(new_spot[2])
 
             x_guesses.append(guess)
         return x_guesses
 
+    def predict1(self, X_test1):
+        """Makes predictions for test instances in X_test.
+
+        Args:
+            X_test(list of list of obj): The list of testing samples
+                The shape of X_test is (n_test_samples, n_features)
+
+        Returns:
+            y_predicted(list of obj): The predicted target y values (parallel to X_test)
+        """
+        x_guesses = []
+        for x_inst in X_test1:
+
+            guess = 'idk'
+            spot = self.tree
+            print()
+            #print('start')
+            #print('x_inst')
+            while guess == 'idk':
+                #print((X_test1))
+                #print(len(X_test1))
+                #print()
+                #print('guess:', guess)
+                #print('spot:',spot)
+                values = []
+
+                if spot[0] == "Leaf":
+                    #print('leaf found:', spot)
+                    guess = spot[1]
+
+                elif spot[0] == "Attribute":
+                    #print(spot)
+                    att_string = spot[1]
+                    att_int = int(att_string[3])
+                    value_inst = x_inst[att_int]
+                    #print(value_inst)
+
+                    for i in range(len(spot)-2):
+                        values.append(spot[i+2])
+
+                    new_spot = 'notfoundyet'
+                    #for value in values:
+                    #print(value)
+
+                    for value_check in values:
+                        #print(new_spot, value_inst, value_check[1])
+                        if value_inst == value_check[1]:
+                            new_spot = value_check
+                            #print('FOUND',new_spot, value_inst, value_check[1])
+
+                    spot = copy.deepcopy(new_spot[2])
+
+            x_guesses.append(guess)
+        return x_guesses
     def print_decision_rules1(self, attribute_names=None, class_name="class"):
         """Prints the decision rules from the tree in the format
         "IF att == val AND ... THEN class = label", one rule on each line.
@@ -775,6 +835,7 @@ class MyDecisionTreeClassifier:
                 if instance[attribute_index] != value:
                     is_match = False
             if is_match:
+                #print(len(self.y_train))
                 ret_train.append(self.y_train[i])
         return ret_train
 

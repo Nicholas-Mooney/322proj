@@ -207,6 +207,13 @@ def bootstrap_sample(X, y=None, n_samples=None, random_state=None):
         Loosely based on sklearn's resample():
             https://scikit-learn.org/stable/modules/generated/sklearn.utils.resample.html
     """
+    print('boot1')
+    print(len(X))
+    print(len(y))
+    print((n_samples))
+    print((random_state))
+
+    #set rand to seed0      and num samples to len
     if n_samples is None:
         n_samples = len(X)
     if random_state is None:
@@ -214,12 +221,15 @@ def bootstrap_sample(X, y=None, n_samples=None, random_state=None):
     np.random.seed(random_state)
 
     index_list = []
-    for i in range(0,len(X)):
+    for i in range(0, len(X)):
         index_list.append(i)
     chosen_indexes = []
     for _ in range(0, n_samples):
         chosen_indexes.append(index_list[int(np.random.randint(0, len(index_list)))])
 
+    print('boot2')
+    print(len(index_list))
+    print(len(chosen_indexes))
     #print(random_state, ' ', n_samples, y)
     #print(index_list)
     #print(chosen_indexes)
@@ -233,7 +243,16 @@ def bootstrap_sample(X, y=None, n_samples=None, random_state=None):
         X_sample.append(X[i])
         if not y is None:
             y_sample.append(y[i])
-    for j in index_list:
+
+
+    print('boot3')
+    print(len(X_sample))
+    print(len(y_sample))
+    print(len(X_out_of_bag))
+    print(len(y_out_of_bag))
+
+    for l, j in enumerate(index_list):
+        #print(l)
         if j not in chosen_indexes:
             X_out_of_bag.append(X[j])
         if not y is None:
@@ -243,10 +262,12 @@ def bootstrap_sample(X, y=None, n_samples=None, random_state=None):
         y_sample = None
         y_out_of_bag = None
 
+    print('boot5')
     #print(chosen_indexes, ' ', )
     #print('x ', X_sample)
     #print()
     return X_sample, X_out_of_bag, y_sample, y_out_of_bag
+
 def confusion_matrix(y_true, y_pred, labels):
     """Compute confusion matrix to evaluate the accuracy of a classification.
 
@@ -303,6 +324,47 @@ def accuracy_score(y_true, y_pred, normalize=True):
         Loosely based on sklearn's accuracy_score():
             https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html#sklearn.metrics.accuracy_score
     """
+    print('')
+    print('acc calc')
+    print(len(y_pred))
+    print(len(y_true))
+    print(y_pred[0])
+    print(y_true[0])
+
+    accuracy = 0
+    total = 0
+    for index, value in enumerate(y_true):
+        total += 1
+        if(y_true[index] == y_pred[index]):
+            accuracy += 1
+    if normalize:
+        accuracy /= total
+    return accuracy
+def old_accuracy_score(y_true, y_pred, normalize=True):
+    """Compute the classification prediction accuracy score.
+
+    Args:
+        y_true(list of obj): The ground_truth target y values
+            The shape of y is n_samples
+        y_pred(list of obj): The predicted target y values (parallel to y_true)
+            The shape of y is n_samples
+        normalize(bool): If false, return the number of correctly classified samples.
+            Otherwise, return the fraction of correctly classified samples.
+
+    Returns:
+        score(float): If normalize == true, return the fraction of correctly classified samples (float),
+            else returns the number of correctly classified samples (int).
+
+    Notes:
+        Loosely based on sklearn's accuracy_score():
+            https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html#sklearn.metrics.accuracy_score
+    """
+    print('')
+    print('acc calc')
+    print(len(y_pred))
+    print(len(y_true))
+    print(y_pred[0])
+    print(y_true[0])
     labels = myutils.get_uniques(y_true)
     matrix = confusion_matrix(y_true, y_pred, labels)
     score = 0

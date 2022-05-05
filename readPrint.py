@@ -45,11 +45,57 @@ def accTradSport(list1):
     #print(trad)
     return trad, sport
 
+def accAlpineIceAid(list1):
+    alpine = []
+    ice = []
+    aid = []
+    for item in list1:
+        if 'Alpine' in item:
+            alpine.append('isAlpine')
+        else:
+            alpine.append('notAlpine')
+        if 'Ice' in item or 'Mixed' in item:
+            ice.append('isIce')
+        else:
+            ice.append('notIce')
+        if 'Aid' in item:
+            aid.append('isAid')
+        else:
+            aid.append('notAid')
+    return alpine, ice, aid
+def parseDiff(list1):
+    diffList = []
+    dang = []
+    for item in list1:
+        if 'r' in item or 'R' in item:
+            dang.append('R')
+        elif 'x' in item or 'X' in item:
+            dang.append('X')
+        else:
+            dang.append('none')
+
+        if '5.6' in item:
+            diffList.append('5.6')
+        elif '5.7' in item:
+            diffList.append('5.7')
+        elif '5.8' in item:
+            diffList.append('5.8')
+        elif '5.9' in item:
+            diffList.append('5.9')
+        elif '5.10' in item:
+            diffList.append('5.10')
+        elif '5.11' in item:
+            diffList.append('5.11')
+        elif '5.12' in item:
+            diffList.append('5.12')
+        else:
+            diffList.append('5.other')
+    return diffList, dang
 def main():
     # reading CSV file
+    # converting column data to list
     data = pd.read_csv("mp_routes.csv")
     new_table = MyPyTable(data)
-    # converting column data to list
     difficulties = data['Rating'].tolist()
     stars = data['Avg Stars'].tolist()
     type = data['Route Type'].tolist()
@@ -84,10 +130,11 @@ def main():
 
     print()
     header = ['trad','sport']
-    X = list(zip(isTrad,isSport))
+    X = list(zip(isTrad, isSport))
 
     dt = MyDecisionTreeClassifier()
-    dt.fit(X,stars)
+    dt.fit(X, stars)
+
     dt.print_decision_rules1(header)
     dt.print_decision_rules(header)
     print(new_agg)
